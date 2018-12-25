@@ -20,5 +20,6 @@ private:
   int size;
   vector<vector<int>*> *grid;
   void fillBoard();
+  bool isInvalidRandomAssignment(int, int, int);
   void printUnderline();
 };

@@ -23,21 +23,21 @@ Board::~Board(){
 }
 
 void Board::fillBoard(){
-  //for 1-size
-    //check which in section are open
-    //input randomly
   srand(time(NULL));
   //numbers 1 ... 9?
-  for(int num = 1; num <= 1/*this->size*/; num++){
+  for(int num = 1; num <= this->size; num++){
     //Columns and Row Sections
     for(int rowSection = 0; rowSection < this->size; rowSection += 3){
       for(int colSection = 0; colSection < this->size; colSection += 3){
         //For this section, find a valid spot for num
         int randomRowInSection = rand() % 3 + rowSection;
         int randomColInSection = rand() % 3 + colSection;
+        while(isInvalidRandomAssignment(randomRowInSection, randomColInSection, num)){
+          randomRowInSection = rand() % 3 + rowSection;
+          randomColInSection = rand() % 3 + colSection;
+        }
 
         this->setCoord(randomRowInSection, randomColInSection, num);
-        cout << (char)(randomRowInSection+97) << " " << randomColInSection << " " << endl;
       }
     }
   }
@@ -46,6 +46,25 @@ void Board::fillBoard(){
 
 void Board::checkBoard(){
   cout << "Checking board coming soon..." << endl;
+}
+
+bool Board::isInvalidRandomAssignment(int row, int col, int num){
+  if(this->grid->at(row)->at(col) != 0){
+    cout << num << " HIT NON ZERO" << endl;
+    return true;
+  }
+
+  for(int i = 0; i < this->size; i++){
+    if(this->grid->at(row)->at(i) == num)
+      return true;
+  }
+
+  for(int i = 0; i < this->size; i++){
+    if(this->grid->at(i)->at(col) == num)
+      return true;
+  }
+
+  return false;
 }
 
 void Board::printBoard(){
