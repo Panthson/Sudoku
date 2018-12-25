@@ -9,7 +9,43 @@ Board::Board(int size){
     this->grid->at(i) = new vector<int>(size, 0);
   }
 
+  this->fillBoard();
+
   this->printBoard();
+}
+
+Board::~Board(){
+  for(int i = 0; i < size; i++){
+    delete this->grid->at(i);
+  }
+
+  delete this->grid;
+}
+
+void Board::fillBoard(){
+  //for 1-size
+    //check which in section are open
+    //input randomly
+  srand(time(NULL));
+  //numbers 1 ... 9?
+  for(int num = 1; num <= 1/*this->size*/; num++){
+    //Columns and Row Sections
+    for(int rowSection = 0; rowSection < this->size; rowSection += 3){
+      for(int colSection = 0; colSection < this->size; colSection += 3){
+        //For this section, find a valid spot for num
+        int randomRowInSection = rand() % 3 + rowSection;
+        int randomColInSection = rand() % 3 + colSection;
+
+        this->setCoord(randomRowInSection, randomColInSection, num);
+        cout << (char)(randomRowInSection+97) << " " << randomColInSection << " " << endl;
+      }
+    }
+  }
+
+}
+
+void Board::checkBoard(){
+  cout << "Checking board coming soon..." << endl;
 }
 
 void Board::printBoard(){
@@ -57,4 +93,8 @@ void Board::printUnderline(){
 
 void Board::setCoord(int row, int col, int value){
   this->grid->at(row)->at(col) = value;
+}
+
+void Board::setCoord(char row, int col, int value){
+  this->setCoord((int)(row - 97), col, value);
 }
