@@ -24,7 +24,15 @@ Board::~Board(){
 
 void Board::fillBoard(){
   srand(time(NULL));
-  //numbers 1 ... 9?
+  //Create a grid that contains all available coordinates
+  vector<vector<pair<int, int>>> availableGrid(this->size, vector<pair<int, int>>(this->size));
+  for(int row = 0; row < availableGrid.size(); row++){
+    for(int col = 0; col < availableGrid.at(row).size(); col++)
+      availableGrid.at(row).at(col) = make_pair(row, col);
+  }
+
+
+
   for(int num = 1; num <= this->size; num++){
     //Columns and Row Sections
     for(int rowSection = 0; rowSection < this->size; rowSection += 3){
@@ -32,39 +40,83 @@ void Board::fillBoard(){
         //For this section, find a valid spot for num
         int randomRowInSection = rand() % 3 + rowSection;
         int randomColInSection = rand() % 3 + colSection;
-        while(isInvalidRandomAssignment(randomRowInSection, randomColInSection, num)){
+        while(!isValidRandomAssignment(randomRowInSection, randomColInSection, num)){
+          //printBoard();
           randomRowInSection = rand() % 3 + rowSection;
           randomColInSection = rand() % 3 + colSection;
+
+          if(!sectionIsPossible(rowSection, colSection, num)){
+            //cout << "IMPOSSIBLE" << endl;
+            this->erase(num);
+            rowSection = colSection = 0;
+          }
         }
 
         this->setCoord(randomRowInSection, randomColInSection, num);
       }
     }
   }
+}
 
+void Board::erase(int val){
+  for(int row = 0; row < this->grid->size(); row++){
+    for(int col = 0; col < this->grid->at(row)->size(); col++){
+      if(this->grid->at(row)->at(col) == val)
+        this->grid->at(row)->at(col) = 0;
+    }
+  }
+}
+
+bool Board::sectionIsPossible(int rowSection, int colSection, int num){
+  //cout << "Checking Section: " << rowSection << ", " << colSection << " " << num << endl;
+  for(int row = rowSection; row < rowSection + sqrt(this->size); row++){
+    for(int col = colSection; col < colSection + sqrt(this->size); col++){
+      if(isValidRandomAssignment(row, col, num))
+        return true;
+    }
+  }
+  return false;
+}
+
+vector<vector<pair<int, int>>> Board::createSectionCoordinates(int rowSection, int colSection){
+  int sectionSize = (int)sqrt(this->size);
+  vector<vector<pair<int, int>>> section(sectionSize, vector<pair<int, int>>(sectionSize));
+  for(int row = 0; row < section.size(); row++){
+    for(int col = 0; col < section.at(row).size(); col++){
+      section.at(row).at(col) = make_pair(row + rowSection, col + colSection);//make_pair(rowSection++, colSection++);
+    }
+  }
+
+  return section;
+}
+
+pair<int, int> Board::grabRandomCoordInSection(vector<vector<pair<int, int>>> section){
+  int randRow = rand() % section.size();
+  int randColumn = rand() % section.at(randRow).size();
+
+  return section.at(randRow).at(randColumn);
 }
 
 void Board::checkBoard(){
   cout << "Checking board coming soon..." << endl;
 }
 
-bool Board::isInvalidRandomAssignment(int row, int col, int num){
+bool Board::isValidRandomAssignment(int row, int col, int num){
   if(this->grid->at(row)->at(col) != 0){
-    cout << num << " HIT NON ZERO" << endl;
-    return true;
+    return false;
   }
 
   for(int i = 0; i < this->size; i++){
     if(this->grid->at(row)->at(i) == num)
-      return true;
+      return false;
   }
 
   for(int i = 0; i < this->size; i++){
     if(this->grid->at(i)->at(col) == num)
-      return true;
+      return false;
   }
 
-  return false;
+  return true;
 }
 
 void Board::printBoard(){

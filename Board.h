@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <utility>
 
 using namespace std;
 
@@ -19,7 +20,12 @@ public:
 private:
   int size;
   vector<vector<int>*> *grid;
+
   void fillBoard();
-  bool isInvalidRandomAssignment(int, int, int);
+  bool sectionIsPossible(int, int, int);
+  void erase(int);
+  vector<vector<pair<int, int>>> createSectionCoordinates(int, int);
+  pair<int, int> grabRandomCoordInSection(vector<vector<pair<int, int>>>);
+  bool isValidRandomAssignment(int, int, int);
   void printUnderline();
 };
