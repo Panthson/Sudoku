@@ -16,7 +16,7 @@ public:
   void printBoard();
   void setCoord(int, int, int);
   void setCoord(char, int, int);
-  void checkBoard();
+  bool validateBoard();
 private:
   int size;
   vector<vector<int>*> *grid;
@@ -24,8 +24,6 @@ private:
   void fillBoard();
   bool sectionIsPossible(int, int, int);
   void erase(int);
-  vector<vector<pair<int, int>>> createSectionCoordinates(int, int);
-  pair<int, int> grabRandomCoordInSection(vector<vector<pair<int, int>>>);
   bool isValidRandomAssignment(int, int, int);
   void printUnderline();
 };

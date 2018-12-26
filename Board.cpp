@@ -10,7 +10,7 @@ Board::Board(int size){
   }
 
   this->fillBoard();
-
+  this->validateBoard();
   this->printBoard();
 }
 
@@ -24,14 +24,6 @@ Board::~Board(){
 
 void Board::fillBoard(){
   srand(time(NULL));
-  //Create a grid that contains all available coordinates
-  vector<vector<pair<int, int>>> availableGrid(this->size, vector<pair<int, int>>(this->size));
-  for(int row = 0; row < availableGrid.size(); row++){
-    for(int col = 0; col < availableGrid.at(row).size(); col++)
-      availableGrid.at(row).at(col) = make_pair(row, col);
-  }
-
-
 
   for(int num = 1; num <= this->size; num++){
     //Columns and Row Sections
@@ -78,27 +70,30 @@ bool Board::sectionIsPossible(int rowSection, int colSection, int num){
   return false;
 }
 
-vector<vector<pair<int, int>>> Board::createSectionCoordinates(int rowSection, int colSection){
-  int sectionSize = (int)sqrt(this->size);
-  vector<vector<pair<int, int>>> section(sectionSize, vector<pair<int, int>>(sectionSize));
-  for(int row = 0; row < section.size(); row++){
-    for(int col = 0; col < section.at(row).size(); col++){
-      section.at(row).at(col) = make_pair(row + rowSection, col + colSection);//make_pair(rowSection++, colSection++);
+bool Board::validateBoard(){
+  //Loop through entire grid
+  for(int row = 0; row < this->grid->size(); row++){
+    for(int col = 0; col < this->grid->at(row)->size(); col++){
+      int val = this->grid->at(row)->at(col);
+      //zero check
+      if(val == 0)
+        continue;
+      //Loop through row
+      for(int rowCheck = 0; rowCheck < this->grid->size(); rowCheck++){
+        if(this->grid->at(rowCheck)->at(col) == val && rowCheck != row){
+          return false;
+        }
+      }
+      //Loop through column
+      for(int rowCheck = 0; rowCheck < this->grid->size(); rowCheck++){
+        if(this->grid->at(rowCheck)->at(col) == val && rowCheck != row){
+          return false;
+        }
+      }
     }
   }
-
-  return section;
-}
-
-pair<int, int> Board::grabRandomCoordInSection(vector<vector<pair<int, int>>> section){
-  int randRow = rand() % section.size();
-  int randColumn = rand() % section.at(randRow).size();
-
-  return section.at(randRow).at(randColumn);
-}
-
-void Board::checkBoard(){
-  cout << "Checking board coming soon..." << endl;
+  cout << "Valid board" << endl;
+  return true;
 }
 
 bool Board::isValidRandomAssignment(int row, int col, int num){
