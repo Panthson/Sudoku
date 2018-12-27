@@ -10,7 +10,8 @@ Board::Board(int size){
   }
 
   this->fillBoard();
-  this->validateBoard();
+  this->createKey();
+  this->partiallyEraseBoard();
   this->printBoard();
 }
 
@@ -70,7 +71,7 @@ bool Board::sectionIsPossible(int rowSection, int colSection, int num){
   return false;
 }
 
-bool Board::validateBoard(){
+bool Board::isValidBoard(){
   //Loop through entire grid
   for(int row = 0; row < this->grid->size(); row++){
     for(int col = 0; col < this->grid->at(row)->size(); col++){
@@ -81,18 +82,30 @@ bool Board::validateBoard(){
       //Loop through row
       for(int rowCheck = 0; rowCheck < this->grid->size(); rowCheck++){
         if(this->grid->at(rowCheck)->at(col) == val && rowCheck != row){
+          cout << "INVALID BOARD" << endl;
           return false;
         }
       }
       //Loop through column
-      for(int rowCheck = 0; rowCheck < this->grid->size(); rowCheck++){
-        if(this->grid->at(rowCheck)->at(col) == val && rowCheck != row){
+      for(int colCheck = 0; colCheck < this->grid->size(); colCheck++){
+        if(this->grid->at(row)->at(colCheck) == val && colCheck != col){
+          cout << "INVALID BOARD" << endl;
           return false;
         }
       }
     }
   }
-  cout << "Valid board" << endl;
+
+  return true;
+}
+
+bool Board::gameWon(){
+  for(int row = 0; row < this->grid->size(); row++){
+    for(int col = 0; col < this->grid->size(); col++){
+      if(this->key->at(row)->at(col) != this->grid->at(row)->at(col))
+        return false;
+    }
+  }
   return true;
 }
 
@@ -163,4 +176,30 @@ void Board::setCoord(int row, int col, int value){
 
 void Board::setCoord(char row, int col, int value){
   this->setCoord((int)(row - 97), col, value);
+}
+
+/*Name: createKey
+  Purpose: Creates an answer key that's a copy of the newly generated board
+*/
+void Board::createKey(){
+  //Set up key to have correct vector sies
+  this->key = new vector<vector<int>*>(this->grid->size());
+  for(int i = 0; i < size; i++){
+    this->key->at(i) = new vector<int>(this->grid->size(), 0);
+  }
+  //Assign values form grid to key
+  for(int row = 0; row < this->grid->size(); row++){
+    for(int col = 0; col < this->grid->size(); col++){
+      this->key->at(row)->at(col) = this->grid->at(row)->at(col);
+    }
+  }
+}
+
+void Board::partiallyEraseBoard(){
+  int randRow, randCol;
+  for(int i = 0; i < pow(this->grid->size(), 2.0) / 2; i++){
+    randRow = rand() % this->grid->size();
+    randCol = rand() % this->grid->size();
+    this->grid->at(randRow)->at(randCol) = 0;
+  }
 }

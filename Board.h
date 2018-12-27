@@ -16,14 +16,18 @@ public:
   void printBoard();
   void setCoord(int, int, int);
   void setCoord(char, int, int);
-  bool validateBoard();
+  bool isValidBoard();
+  bool gameWon();
 private:
   int size;
   vector<vector<int>*> *grid;
+  vector<vector<int>*> *key;
 
   void fillBoard();
   bool sectionIsPossible(int, int, int);
   void erase(int);
   bool isValidRandomAssignment(int, int, int);
   void printUnderline();
+  void createKey();
+  void partiallyEraseBoard();
 };
