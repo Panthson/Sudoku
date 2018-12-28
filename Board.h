@@ -30,4 +30,5 @@ private:
   void printUnderline();
   void createKey();
   void partiallyEraseBoard();
+  void clearBoard();
 };

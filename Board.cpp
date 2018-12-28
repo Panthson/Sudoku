@@ -37,16 +37,21 @@ void Board::fillBoard(){
           //printBoard();
           randomRowInSection = rand() % 3 + rowSection;
           randomColInSection = rand() % 3 + colSection;
-
           if(!sectionIsPossible(rowSection, colSection, num)){
-            //cout << "IMPOSSIBLE" << endl;
             this->erase(num);
             rowSection = colSection = 0;
           }
         }
-
         this->setCoord(randomRowInSection, randomColInSection, num);
       }
+    }
+  }
+}
+
+void Board::clearBoard(){
+  for(int row = 0; row < this->grid->size(); row++){
+    for(int col = 0; col < this->grid->size(); col++){
+      this->grid->at(row)->at(col) = 0;
     }
   }
 }
@@ -197,7 +202,7 @@ void Board::createKey(){
 
 void Board::partiallyEraseBoard(){
   int randRow, randCol;
-  for(int i = 0; i < pow(this->grid->size(), 2.0) / 2; i++){
+  for(int i = 0; i < pow(this->grid->size() / 1.5, 2.0); i++){
     randRow = rand() % this->grid->size();
     randCol = rand() % this->grid->size();
     this->grid->at(randRow)->at(randCol) = 0;
